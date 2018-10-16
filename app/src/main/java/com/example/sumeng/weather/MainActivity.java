@@ -1,6 +1,7 @@
 package com.example.sumeng.weather;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.InvalidMarkException;
 
 /**
  * Created by sumeng on 2018/9/25.
@@ -35,6 +37,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private static final int UPDATE_TODAY_WEATHER = 1;
 
     private ImageView mUpdateBtn;
+
+    private ImageView mCitySelect;
 
     //初始化界面控件
     private TextView cityTv, timeTv, humidityTv, weekTv, pmDataTv, pmQualityTv, temperatureTv, climateTv, windTv, city_name_Tv;
@@ -59,15 +63,34 @@ public class MainActivity extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
         setContentView(R.layout.weather_info);
+
+
         mUpdateBtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdateBtn.setOnClickListener(this);
 
+        mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
+        mCitySelect.setOnClickListener(this);
         //初始化界面控件
         initView();
+
     }
 
     @Override
     public void onClick(View view) {
+
+        //intent 解决Android应用的各组件间的通信
+        //四大组件 1\activity  2\service  3\content Providers  4\broadcast reseivers
+        //intent包含对其他组件的意图描述信息
+        //android 根据intent描述，找到相应组件
+        //包含组件名称（组件名称都是独一的）
+        if(view.getId() == R.id.title_city_manager){
+            Intent i = new Intent(this,SelectCity.class);
+            //startActivity(i);
+            //启动activity之后，等待新activity传回来的数据
+            startActivityForResult(i,1);
+        }
+
+
         if(view.getId()==R.id.title_update_btn){
             SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
             String cityCode = sharedPreferences.getString("main_ city_code", "101010100");
@@ -260,5 +283,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力:"+todayWeather.getFengli());
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * "Intent发起方"实现该方法，与startActivityForResult()搭配使用
+     * 该方法是个回调函数，返回方会向发起方返回数据，发起方接受数据，返回方active结束执行finish()便会执行回调函数
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            String newCityCode = data.getStringExtra("cityCode");
+            Log.d("myWeather", "选择的城市代码为" + newCityCode);
+            queryWeatherCode(newCityCode);
+        }
     }
 }
