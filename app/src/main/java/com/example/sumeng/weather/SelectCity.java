@@ -19,6 +19,7 @@ public class SelectCity extends Activity implements View.OnClickListener{
         //指定布局文件
         setContentView(R.layout.select_city);
 
+        //给后退按钮设置监听事件
         mBackBtn = (ImageView) findViewById(R.id.title_back);
         mBackBtn.setOnClickListener(this);
     }
@@ -27,10 +28,11 @@ public class SelectCity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.title_back:
-                //向intent发起方返回数据
+                //向intent发起方返回数据（key-value）
                 Intent i = new Intent();
                 i.putExtra("cityCode","101090104");
                 setResult(RESULT_OK,i);
+                //finish之后会执行intent发起方的回调函数
                 finish();
                 break;
             default:

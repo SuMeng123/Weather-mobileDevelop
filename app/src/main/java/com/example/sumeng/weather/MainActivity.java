@@ -64,12 +64,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(saveInstanceState);
         setContentView(R.layout.weather_info);
 
-
+        //为刷新按钮添加监听事件
         mUpdateBtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdateBtn.setOnClickListener(this);
 
+        //为城市管理按钮添加监听事件
         mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
         mCitySelect.setOnClickListener(this);
+
         //初始化界面控件
         initView();
 
@@ -92,8 +94,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 
         if(view.getId()==R.id.title_update_btn){
+            //获取SharedPreferences实例（因为是接口，所以不能直接new,系统为我们提供了方法）
+            //String name 保存的文件名
+            //int mode  操作文件的模式,下面是四种操作模式的详解
+            //Context.MODE_PRIVATE：为默认操作模式，代表该文件是私有数据，只能被应用本身访问，在该模式下，写入的内容会覆盖原文件的内容，如果想把新写入的内容追加到原文件中。可以使用Context.MODE_APPEND
+            //Context.MODE_APPEND：模式会检查文件是否存在，存在就往文件追加内容，否则就创建新文件。
+            //Context.MODE_WORLD_READABLE和Context.MODE_WORLD_WRITEABLE用来控制其他应用是否有权限读写该文件。
+            //MODE_WORLD_READABLE：表示当前文件可以被其他应用读取；
+            //MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入。
             SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-            String cityCode = sharedPreferences.getString("main_ city_code", "101010100");
+            //如果没有main_city_code对应的值，则规定默认返回值是101010100
+            String cityCode = sharedPreferences.getString("main_city_code", "101010100");
             Log.d("myWeather",cityCode);
 
             queryWeatherCode(cityCode);

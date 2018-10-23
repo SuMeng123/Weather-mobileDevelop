@@ -23,6 +23,9 @@ public class MyApplication extends Application{
 
     private static MyApplication mApplication;
 
+    //application对象是全局的单例的，
+    //在不同的activity/service都会获得同一个对象，通过applicarion可以进行数据传递共享缓存
+
     private CityDB mCityDB;
 
     private List<City> mCityList;
@@ -41,6 +44,10 @@ public class MyApplication extends Application{
         return mApplication;
     }
 
+    /**
+     * 根据db文件创建CityDB对象，CityDB对象来操作数据库增删改查
+     * @return 返回CityDB对象
+     */
     private CityDB openCityDB() {
         String path = "/data"
                 + Environment.getDataDirectory().getAbsolutePath()
@@ -81,6 +88,9 @@ public class MyApplication extends Application{
         return new CityDB(this, path);
     }
 
+    /**
+     * 初始化mCityList
+     */
     private void initCityList(){
         mCityList = new ArrayList<City>();
         new Thread(new Runnable() {

@@ -18,6 +18,7 @@ public class CityDB {
     private static final String CITY_TABLE_NAME = "city";
     private SQLiteDatabase db;
     public CityDB(Context context, String path) {
+        //通过文件path创建SQLiteDatabase对象。通过此对象就可以操作数据库
         db = context.openOrCreateDatabase(path, Context.MODE_PRIVATE, null);
     }
     //从数据库中读取城市列表
