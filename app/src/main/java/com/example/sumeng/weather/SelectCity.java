@@ -19,6 +19,7 @@ import java.util.List;
 
 import static com.example.sumeng.app.MyApplication.getInstance;
 
+
 /**
  * Created by sumeng on 2018/10/16.
  */
@@ -42,6 +43,8 @@ public class SelectCity extends Activity implements View.OnClickListener{
 
     private String[] dataStr;
 
+    //城市编号
+    private String cityCode= "";
     @Override
     protected void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
@@ -69,7 +72,9 @@ public class SelectCity extends Activity implements View.OnClickListener{
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            { Toast.makeText(SelectCity.this, "你点击城市的编码是:"+mCityList.get(i).getNumber(),Toast.LENGTH_SHORT).show();
+            {
+                Toast.makeText(SelectCity.this, "你点击城市的编码是:"+mCityList.get(i).getNumber(),Toast.LENGTH_SHORT).show();
+                cityCode = mCityList.get(i).getNumber();
             }
         });
 
@@ -81,7 +86,7 @@ public class SelectCity extends Activity implements View.OnClickListener{
             case R.id.title_back:
                 //向intent发起方返回数据（key-value）
                 Intent i = new Intent();
-                i.putExtra("cityCode","101090104");
+                i.putExtra("cityCode",cityCode);
                 setResult(RESULT_OK,i);
                 //finish之后会执行intent发起方的回调函数
                 finish();
