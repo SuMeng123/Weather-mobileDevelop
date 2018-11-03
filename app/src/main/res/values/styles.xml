@@ -7,11 +7,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
-        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-    <!--</style>-->
-
+    <style name="title_update_progressbar_style" >
+        <item name="android:maxWidth">45.0dip</item>
+        <item name="android:maxHeight">45.0dip</item>
+        <item name="android:indeterminateDrawable">@drawable/title_update_pro</item>
+        <item name="android:minWidth">45.0dip</item>
+        <item name="android:minHeight">45.0dip</item>
+    </style>
 </resources>

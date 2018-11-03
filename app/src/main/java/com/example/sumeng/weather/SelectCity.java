@@ -1,23 +1,25 @@
 package com.example.sumeng.weather;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.sumeng.app.MyApplication;
 import com.example.sumeng.bean.City;
+//import com.example.sumeng.utils.ClearEditText;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.sumeng.app.MyApplication.getInstance;
 
 
 /**
@@ -28,71 +30,146 @@ public class SelectCity extends Activity implements View.OnClickListener{
 
     private ImageView mBackBtn;
 
-    private String[] data={"第1组","第2组","第3组","第4组","第5组","第6组", "第7组","第8组","第9组","第10组","第11组","第12组","第13组", "第14组","第15组","第16组","第17组","第18组","第19组","第20组",
-            "第21组","第22组"};
+    private EditText mEditText;
+    //存城市名字的数组
+    List<String> cityName = new ArrayList<String>();
+    //存城市编码的数组
+    List<String> cityNum = new ArrayList<String>();
+    //获得CityList
+    ArrayList<City> myCityList = (ArrayList<City>) MyApplication.getInstance().getCityList();
+    //获得myCityList的长度
+    int City_length = myCityList.size();
 
-    private ListView mlistView;
+    //初始化适配器
+    ArrayAdapter<String> adapter;
 
-    private MyApplication application;
 
-    private List<City> mCityList;
-
-    private City[] dataCity;
-
-    private List<String> dataCityName;
-
-    private String[] dataStr;
-
-    //城市编号
-    private String cityCode= "";
     @Override
-    protected void onCreate(Bundle saveInstanceState){
-        super.onCreate(saveInstanceState);
-        //指定布局文件
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.select_city);
 
-        //给后退按钮设置监听事件
-        mBackBtn = (ImageView) findViewById(R.id.title_back);
+        mBackBtn = (ImageView)findViewById(R.id.title_back);
         mBackBtn.setOnClickListener(this);
 
-        //获得城市信息list
-        application = getInstance();
-        mCityList = application.getCityList();
-        dataCityName = new ArrayList<>();
-        for (int i=0;i<mCityList.size();i++){
-            dataCityName.add(mCityList.get(i).getCity());
-        }
-        dataStr =  dataCityName.toArray(new String[dataCityName.size()]);
+        selectCityMsgByPY(myCityList,"");
 
-        //显示城市信息list
-        mlistView = (ListView)findViewById(R.id.list_view);
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(SelectCity.this,android.R.layout.simple_list_item_1,dataStr);
+        ListView mlistView = (ListView)findViewById(R.id.list_view);
+        adapter = new ArrayAdapter<String>(SelectCity.this, android.R.layout.simple_list_item_1,cityName);
         mlistView.setAdapter(adapter);
-
-        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //设置点击效果
+        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                Toast.makeText(SelectCity.this, "你点击城市的编码是:"+mCityList.get(i).getNumber(),Toast.LENGTH_SHORT).show();
-                cityCode = mCityList.get(i).getNumber();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent();
+                i.putExtra("cityCode", cityNum.get(position));
+                setResult(RESULT_OK, i);
+                finish();
             }
         });
+        //获取EditText
+        mEditText = (EditText)findViewById(R.id.search_edit);
+        //添加监听器
+        mEditText.addTextChangedListener(mTextWatcher);
 
     }
+
+    TextWatcher mTextWatcher = new TextWatcher() {
+        private CharSequence temp;
+        private int editStart ;
+        private int editEnd ;
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            temp = s;
+            Log.d("myapp", "beforeTextChanged:" + temp) ;
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            selectCityMsgByPY(myCityList, s.toString());
+            adapter.notifyDataSetChanged();
+            Log.d("myapp","onTextChanged:"+s) ;
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            editStart = mEditText.getSelectionStart();
+            editEnd = mEditText.getSelectionEnd();
+            if (temp.length() > 10) {
+                Toast.makeText(SelectCity.this,"你输⼊入的字数已经超过了限制！", Toast.LENGTH_SHORT).show();
+                s.delete(editStart-1, editEnd);
+                int tempSelection = editStart;
+                mEditText.setText(s);
+                mEditText.setSelection(tempSelection);
+            }
+            Log.d("myapp","afterTextChanged:") ;
+        }
+    };
 
     @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.title_back:
-                //向intent发起方返回数据（key-value）
                 Intent i = new Intent();
-                i.putExtra("cityCode",cityCode);
-                setResult(RESULT_OK,i);
-                //finish之后会执行intent发起方的回调函数
+                i.putExtra("cityCode", "101160101");
+                setResult(RESULT_OK, i);
                 finish();
                 break;
             default:
                 break;
+
         }
     }
+
+    //根据拼音给出城市信息
+    public void selectCityMsgByPY(List<City> myCityList, String PY){
+        cityName.clear();
+        cityNum.clear();
+
+        //给城市属性数组赋值
+        for(int i = 0; i < City_length; i ++){
+            if(comparePY(myCityList.get(i), PY))
+            {
+                cityName.add(myCityList.get(i).getCity());
+                cityNum.add(myCityList.get(i).getNumber());
+                //Log.d("selectCITY",myCityList.get(i).getCity()+":"+myCityList.get(i).getNumber());
+            }
+        }
+    }
+
+    //城市拼音匹配判断
+    public boolean comparePY(City city ,String PY){
+        String AllPY = city.getAllFristPY();
+        if(AllPY.toLowerCase().contains(PY.toLowerCase()))
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -107,7 +107,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
             String cityCode = sharedPreferences.getString("main_city_code", "101010100");
             Log.d("myWeather",cityCode);
 
+            findViewById(R.id.updat_rel).setVisibility(View.INVISIBLE);
+            findViewById(R.id.title_update_progress).setVisibility(View.VISIBLE);
             queryWeatherCode(cityCode);
+            findViewById(R.id.updat_rel).setVisibility(View.VISIBLE);
+            findViewById(R.id.title_update_progress).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -153,6 +157,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 }catch (Exception e){
                     e.printStackTrace();
                 }finally {
+
                     if(con != null){
                         con.disconnect();
                     }
