@@ -107,11 +107,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
             String cityCode = sharedPreferences.getString("main_city_code", "101010100");
             Log.d("myWeather",cityCode);
 
-            findViewById(R.id.updat_rel).setVisibility(View.INVISIBLE);
+            findViewById(R.id.title_update_btn).setVisibility(View.INVISIBLE);
             findViewById(R.id.title_update_progress).setVisibility(View.VISIBLE);
             queryWeatherCode(cityCode);
-            findViewById(R.id.updat_rel).setVisibility(View.VISIBLE);
-            findViewById(R.id.title_update_progress).setVisibility(View.INVISIBLE);
+
         }
     }
 
@@ -153,6 +152,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         msg.what = UPDATE_TODAY_WEATHER;
                         msg.obj=todayWeather;
                         mHandler.sendMessage(msg);
+
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -161,6 +161,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     if(con != null){
                         con.disconnect();
                     }
+                    try {
+                        Thread.currentThread().sleep(2000);
+                        findViewById(R.id.title_update_progress).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.title_update_btn).setVisibility(View.VISIBLE);
+                    }catch (Exception e){}
                 }
             }
         }).start();
@@ -288,6 +293,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
      * @param todayWeather
      */
     void updateTodayWeather(TodayWeather todayWeather){
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         city_name_Tv.setText(todayWeather.getCity()+"天气");
         cityTv.setText(todayWeather.getCity());
         timeTv.setText(todayWeather.getUpdatetime()+ "发布");
