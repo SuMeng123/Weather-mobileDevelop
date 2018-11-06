@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.example.sumeng.bean.MyLocationListerner;
 import com.example.sumeng.bean.TodayWeather;
 
@@ -41,6 +42,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private ImageView mUpdateBtn;
 
+    private ImageView mtitleLocation;
+
     private ImageView mCitySelect;
 
     public LocationClient mLocationClient = null;
@@ -51,6 +54,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     //定义progressbar控件
     private ProgressBar mUpdateProgressBar;//刷新按钮动画
+
+    //定位按钮
+    private ImageView mTitleLocation;
 
     /**
      * 主线程
@@ -81,6 +87,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //为城市管理按钮添加监听事件
         mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
         mCitySelect.setOnClickListener(this);
+
+        //为定位按钮添加监听事件
+        mtitleLocation = (ImageView) findViewById(R.id.title_location);
+        mtitleLocation.setOnClickListener(this);
 
         mUpdateProgressBar = (ProgressBar) findViewById(R.id.title_update_progress);
         //初始化界面控件
@@ -117,10 +127,47 @@ public class MainActivity extends Activity implements View.OnClickListener{
             //如果没有main_city_code对应的值，则规定默认返回值是101010100
             String cityCode = sharedPreferences.getString("main_city_code", "101010100");
             Log.d("myWeather",cityCode);
-
-//            findViewById(R.id.title_update_btn).setVisibility(View.GONE);
-//            findViewById(R.id.title_update_progress).setVisibility(View.VISIBLE);
             queryWeatherCode(cityCode);
+        }
+
+        if (view.getId()==R.id.title_location){
+//            setUpdateProgress();
+            startLocate();
+            if(mLocationClient.isStarted()){
+                mLocationClient.stop();
+            }
+            mLocationClient.start();
+            final Handler BDHandler = new Handler(){
+                public void handleMessage(Message msg){
+                    switch (msg.what){
+                        case UPDATE_TODAY_WEATHER:
+                            if(msg.obj!=null){
+                                queryWeatherCode(myListener.cityCode);
+                            }
+                            myListener.cityCode=null;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        while(myListener.cityCode == null){
+                            Thread.sleep(2000);
+                        }
+                        Message msg = new Message();
+                        msg.what = UPDATE_TODAY_WEATHER;
+                        msg.obj = myListener.cityCode;
+                        BDHandler.sendMessage(msg);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
 
         }
     }
@@ -341,5 +388,21 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Log.d("myWeather", "选择的城市代码为" + newCityCode);
             queryWeatherCode(newCityCode);
         }
+    }
+
+    private void startLocate(){
+        mLocationClient = new LocationClient(getApplicationContext());
+        mLocationClient.registerLocationListener(myListener);
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
+        option.setCoorType("bd0911");
+        option.setOpenGps(true);
+        option.setLocationNotify(true);
+        option.setIsNeedAddress(true);
+        option.setIsNeedLocationDescribe(true);
+        option.setIsNeedLocationPoiList(true);
+        option.setIgnoreKillProcess(false);
+        mLocationClient.setLocOption(option);
+        mLocationClient.start();
     }
 }
