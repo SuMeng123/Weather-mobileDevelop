@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- title bar -->
-    <include
-        android:id="@+id/title"
-        layout="@layout/title_bar" />
+    <!--<include-->
+        <!--android:id="@+id/title"-->
+        <!--layout="@layout/title_bar" />-->
 
     <RelativeLayout
         android:id="@+id/title"
@@ -38,37 +38,46 @@
             android:text="北京天气"
             android:textColor="#ffffffff"
             android:textSize="22.0sp" />
-
-        <RelativeLayout
-            android:id="@+id/updat_rel"
-            android:layout_width="45.0dip"
-            android:layout_height="45.0dip"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_alignParentRight="true">
             <ImageView
-                android:id="@+id/title_update_btn"
+                android:id="@+id/title_share"
                 android:layout_width="45.0dip"
                 android:layout_height="45.0dip"
+                android:src="@drawable/title_share" />
+
+            <ImageView
+                android:id="@+id/title_location"
+                android:layout_width="45.0dip"
+                android:layout_height="45.0dip"
+                android:layout_toLeftOf="@id/title_share"
+                android:src="@drawable/base_action_bar_action_city" />
+            <FrameLayout
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentRight="true"
-                android:layout_gravity="center"
-                android:src="@drawable/title_update"
-                android:visibility="visible" />
-        </RelativeLayout>
-        <include android:id="@+id/title_update_process1"
-            layout="@layout/title_update_process"/>
+                android:layout_gravity="center">
+                <ImageView
+                    android:id="@+id/title_update_btn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/title_update"/>
+                <ProgressBar
+                    android:id="@+id/title_update_progress"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    style="@style/title_update_progressbar_style"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"
+                    />
+            </FrameLayout>
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/title_share"
-            android:layout_width="45.0dip"
-            android:layout_height="45.0dip"
-            android:layout_toLeftOf="@id/updat_rel"
-            android:src="@drawable/title_share" />
 
-        <ImageView
-            android:id="@+id/title_location"
-            android:layout_width="45.0dip"
-            android:layout_height="45.0dip"
-            android:layout_toLeftOf="@id/title_share"
-            android:src="@drawable/base_action_bar_action_city" />
+
     </RelativeLayout>
 
     <LinearLayout

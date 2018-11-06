@@ -10,9 +10,12 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
+import com.example.sumeng.bean.MyLocationListerner;
 import com.example.sumeng.bean.TodayWeather;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -40,9 +43,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private ImageView mCitySelect;
 
+    public LocationClient mLocationClient = null;
+    private MyLocationListerner myListener = new MyLocationListerner();
     //初始化界面控件
     private TextView cityTv, timeTv, humidityTv, weekTv, pmDataTv, pmQualityTv, temperatureTv, climateTv, windTv, city_name_Tv;
     private ImageView weatherImg, pmImg;
+
+    //定义progressbar控件
+    private ProgressBar mUpdateProgressBar;//刷新按钮动画
 
     /**
      * 主线程
@@ -52,6 +60,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
             switch (msg.what) {
                 case UPDATE_TODAY_WEATHER:
                     updateTodayWeather((TodayWeather) msg.obj);
+                    mUpdateBtn.setVisibility(View.VISIBLE);
+                    mUpdateProgressBar.setVisibility(View.GONE);
                     break;
                 default:
                     break;
@@ -72,6 +82,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
         mCitySelect.setOnClickListener(this);
 
+        mUpdateProgressBar = (ProgressBar) findViewById(R.id.title_update_progress);
         //初始化界面控件
         initView();
 
@@ -107,8 +118,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
             String cityCode = sharedPreferences.getString("main_city_code", "101010100");
             Log.d("myWeather",cityCode);
 
-            findViewById(R.id.title_update_btn).setVisibility(View.INVISIBLE);
-            findViewById(R.id.title_update_progress).setVisibility(View.VISIBLE);
+//            findViewById(R.id.title_update_btn).setVisibility(View.GONE);
+//            findViewById(R.id.title_update_progress).setVisibility(View.VISIBLE);
             queryWeatherCode(cityCode);
 
         }
@@ -119,6 +130,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
      * @param cityCode
      */
     private void queryWeatherCode(String cityCode) {
+        mUpdateBtn.setVisibility(View.GONE);
+        mUpdateProgressBar.setVisibility(View.VISIBLE);
+
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d("myWeather", address);
         new Thread(new Runnable() {
@@ -145,6 +159,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     Log.d("myWeather", responseStr);
                     //解析xml文件
                     todayWeather = parseXML(responseStr);
+                    try {
+                        Thread.currentThread().sleep(1000);
+                    }catch (Exception e){}
                     if (todayWeather != null) {
                         Log.d("myWeather", todayWeather.toString());
 
@@ -161,11 +178,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     if(con != null){
                         con.disconnect();
                     }
-                    try {
-                        Thread.currentThread().sleep(2000);
-                        findViewById(R.id.title_update_progress).setVisibility(View.INVISIBLE);
-                        findViewById(R.id.title_update_btn).setVisibility(View.VISIBLE);
-                    }catch (Exception e){}
+//                    try {
+//                        Thread.currentThread().sleep(10000);
+////                        findViewById(R.id.title_update_progress).setVisibility(View.GONE);
+////                        findViewById(R.id.title_update_btn).setVisibility(View.VISIBLE);
+//                    }catch (Exception e){}
                 }
             }
         }).start();

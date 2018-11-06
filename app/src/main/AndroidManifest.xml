@@ -2,6 +2,13 @@
     package="com.example.sumeng.weather">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name="com.example.sumeng.app.MyApplication"
         android:allowBackup="true"
@@ -10,6 +17,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="vYax2hiFjd2ZyvihGtcSfIQKFwaryydc"
+            >
+        </meta-data>
+        <service
+            android:name="com.baidu.location.f">
+
+        </service>
         <activity android:name=".MainActivity">
             <!--intent-filer只能在一个activity中加-->
             <intent-filter>

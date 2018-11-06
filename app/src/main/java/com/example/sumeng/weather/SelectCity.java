@@ -150,26 +150,3 @@ public class SelectCity extends Activity implements View.OnClickListener{
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
