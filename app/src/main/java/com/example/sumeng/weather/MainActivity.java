@@ -155,9 +155,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 @Override
                 public void run() {
                     try{
-                        while(myListener.cityCode == null){
-                            Thread.sleep(2000);
-                        }
                         Message msg = new Message();
                         msg.what = UPDATE_TODAY_WEATHER;
                         msg.obj = myListener.cityCode;

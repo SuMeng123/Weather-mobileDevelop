@@ -56,6 +56,8 @@ public class SelectCity extends Activity implements View.OnClickListener{
         selectCityMsgByPY(myCityList,"");
 
         ListView mlistView = (ListView)findViewById(R.id.list_view);
+        //系统布局文件：android.R.layout.xxx;
+        //用户自定义布局文件：R.layout.xxx;
         adapter = new ArrayAdapter<String>(SelectCity.this, android.R.layout.simple_list_item_1,cityName);
         mlistView.setAdapter(adapter);
         //设置点击效果
