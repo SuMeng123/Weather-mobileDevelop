@@ -29,13 +29,16 @@
         </service>
         <activity android:name=".MainActivity">
             <!--intent-filer只能在一个activity中加-->
+
+        </activity>
+        <activity android:name=".SelectCity">
+
+        </activity>
+        <activity android:name=".Guide">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".SelectCity">
-
         </activity>
     </application>
 
