@@ -259,6 +259,40 @@
             </RelativeLayout>
         </RelativeLayout>
         <!-- 六日天气信息 -->
+        <RelativeLayout
+            android:id="@+id/sixDay_waeather"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10.0dip">
+            <!--展示滑动页面-->
+            <android.support.v4.view.ViewPager
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:id="@+id/viewpager"
+                >
+            </android.support.v4.view.ViewPager>
+            <!--两个小点-->
+            <LinearLayout
+                android:id="@+id/indicator"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_alignParentBottom="true">
+                <ImageView
+                    android:id="@+id/iv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:src="@drawable/page_indicator_focused"/>
+                <ImageView
+                    android:id="@+id/iv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:src="@drawable/page_indicator_unfocused"/>
+            </LinearLayout>
+        </RelativeLayout>
         <!-- 广告等信息 -->
     </LinearLayout>
 </RelativeLayout>
