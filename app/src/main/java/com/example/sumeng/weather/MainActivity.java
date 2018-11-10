@@ -355,7 +355,7 @@ public class MainActivity extends Activity implements View.OnClickListener ,View
                         } else if (xmlPullParser.getName().equals("high") && highCount == 0) {
                             eventType = xmlPullParser.next();
                             todayWeather.setHigh(xmlPullParser.getText());
-                            todayWeather.setTemperatureH1(xmlPullParser.getText());
+                            todayWeather.setTemperatureH1(xmlPullParser.getText().split(" ")[1]);
                             highCount++;
                         } else if (xmlPullParser.getName().equals("high") && highCount == 1) {
                             eventType = xmlPullParser.next();
